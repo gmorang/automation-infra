@@ -1,0 +1,74 @@
+services:
+  postgres:
+    extends:
+      file: ./databases/postgres/docker-compose.yml
+      service: postgres
+    hostname: postgres
+    networks:
+      - gmorang_network
+
+  evolution:
+    extends:
+      file: ./services/evolution/docker-compose.yml
+      service: evolution
+    hostname: evolution
+    networks:
+      - gmorang_network
+    depends_on:
+      - redis
+      - postgres
+
+  redis:
+    extends:
+      file: ./databases/redis/docker-compose.yml
+      service: redis
+    hostname: redis
+    networks:
+      - gmorang_network
+
+  n8n_api:
+    extends:
+      file: ./services/n8n/docker-compose.yml
+      service: n8n_api
+    hostname: n8n_api
+    networks:
+      - gmorang_network
+    depends_on:
+      - postgres
+      - redis
+
+  n8n_worker:
+    extends:
+      file: ./services/n8n/docker-compose.yml
+      service: n8n_worker
+    hostname: n8n_worker
+    networks:
+      - gmorang_network
+
+    depends_on:
+      - n8n_api
+
+  n8n_webhook:
+    extends:
+      file: ./services/n8n/docker-compose.yml
+      service: n8n_webhook
+    hostname: n8n_webhook
+    networks:
+      - gmorang_network
+    depends_on:
+      - n8n_api
+
+networks:
+  gmorang_network:
+    name: gmorang_network
+    driver: bridge
+
+volumes:
+  n8n_data:
+    name: n8n_data
+  redis_data:
+    name: redis_data
+  postgres_data:
+    name: postgres_data
+  evolution_data:
+    name: evolution_data

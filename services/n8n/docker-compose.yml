@@ -1,0 +1,51 @@
+services:
+  n8n_api:
+    image: n8nio/n8n:${N8N_VERSION}
+    env_file:
+      - n8n.env
+    volumes:
+      - n8n_data:/home/node/.n8n
+    expose:
+      - "5678"
+    ports:
+      - "${N8N_PORT}:5678"
+    networks:
+      - gmorang_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost:5678/healthz"]
+      interval: 30s
+      timeout: 10s
+
+  n8n_worker:
+    image: n8nio/n8n:${N8N_VERSION}
+    command: worker
+    env_file:
+      - n8n.env
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      - gmorang_network
+    restart: unless-stopped
+    depends_on:
+      n8n_api:
+        condition: service_healthy
+
+  n8n_webhook:
+    image: n8nio/n8n:${N8N_VERSION}
+    command: webhook
+    env_file:
+      - n8n.env
+    volumes:
+      - n8n_data:/home/node/.n8n
+    networks:
+      gmorang_network:
+        aliases:
+          - n8nwebhook
+    restart: unless-stopped
+    depends_on:
+      n8n_api:
+        condition: service_healthy
+
+volumes:
+  n8n_data:
