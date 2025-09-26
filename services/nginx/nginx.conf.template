@@ -2,12 +2,12 @@ server {
     listen 80;
     server_name ${NGINX_HOST} localhost;
     
-    # Página inicial com links para os serviços
+    # Homepage with service links
     location = / {
         return 200 '<!DOCTYPE html>
 <html>
 <head>
-    <title>Serviços Disponíveis</title>
+    <title>Available Services</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
@@ -26,19 +26,19 @@ server {
 </head>
 <body>
     <div class="container">
-        <h1>🚀 Serviços Disponíveis</h1>
+        <h1>🚀 Available Services</h1>
         
         <div class="services">
             <div class="service">
                 <h2>📊 N8N <span class="status">ONLINE</span></h2>
-                <p class="description">Plataforma de automação de workflows e integração de sistemas. Crie automações complexas sem código.</p>
-                <a href="/n8n/">Acessar N8N</a>
+                <p class="description">Workflow automation platform and system integration. Create complex automations without code.</p>
+                <a href="/n8n/">Access N8N</a>
             </div>
             
             <div class="service">
                 <h2>💬 Evolution API <span class="status">ONLINE</span></h2>
-                <p class="description">API para integração com WhatsApp Business. Gerencie mensagens, contatos e automações do WhatsApp.</p>
-                <a href="/evolution/">Acessar Evolution</a>
+                <p class="description">API for WhatsApp Business integration. Manage messages, contacts and WhatsApp automations.</p>
+                <a href="/evolution/manager">Access Evolution Manager</a>
             </div>
         </div>
     </div>
@@ -52,7 +52,7 @@ server {
         # Remover o prefixo /n8n/ antes de enviar para o backend
         rewrite ^/n8n/(.*) /$1 break;
         
-        proxy_pass http://n8n_api:5678;
+        proxy_pass http://automation-infra-n8n_api-1:5678;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -80,7 +80,7 @@ server {
     location /n8n/webhook/ {
         rewrite ^/n8n/webhook/(.*) /webhook/$1 break;
         
-        proxy_pass http://n8n_api:5678;
+        proxy_pass http://automation-infra-n8n_api-1:5678;
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
@@ -94,12 +94,38 @@ server {
         proxy_send_timeout 300s;
     }
     
-    # Rota para Evolution API
+    # Rota específica para Evolution Manager
+    location /evolution/manager {
+        proxy_pass http://automation-infra-evolution-1:8080/manager;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_cache_bypass $http_upgrade;
+        
+        # Configurações de timeout
+        proxy_connect_timeout 60s;
+        proxy_send_timeout 60s;
+        proxy_read_timeout 60s;
+        
+        # Configurações de buffer
+        proxy_buffering off;
+        proxy_request_buffering off;
+        
+        # Configurações específicas para Evolution
+        proxy_set_header Accept-Encoding "";
+        proxy_hide_header X-Powered-By;
+    }
+    
+    # Rota para Evolution API (outras rotas)
     location /evolution/ {
         # Remover o prefixo /evolution/ antes de enviar para o backend
         rewrite ^/evolution/(.*) /$1 break;
         
-        proxy_pass http://evolution:8080;
+        proxy_pass http://automation-infra-evolution-1:8080;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
@@ -126,7 +152,7 @@ server {
     # Configurações para arquivos estáticos do N8N
     location ~* ^/n8n/.*\.(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2|ttf|eot)$ {
         rewrite ^/n8n/(.*) /$1 break;
-        proxy_pass http://n8n_api:5678;
+        proxy_pass http://automation-infra-n8n_api-1:5678;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
@@ -139,12 +165,12 @@ server {
     
     # Health checks
     location /healthz {
-        proxy_pass http://n8n_api:5678;
+        proxy_pass http://automation-infra-n8n_api-1:5678;
         access_log off;
     }
     
     location /evolution/health {
-        proxy_pass http://evolution:8080;
+        proxy_pass http://automation-infra-evolution-1:8080;
         access_log off;
     }
     
@@ -159,7 +185,7 @@ server {
     error_page 500 502 503 504 /50x.html;
     
     location = /50x.html {
-        return 500 '<h1>Erro 500</h1><p>Erro interno do servidor</p>';
+        return 500 '<h1>Error 500</h1><p>Internal server error</p>';
         add_header Content-Type text/html;
     }
 }
