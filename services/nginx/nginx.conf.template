@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name ${NGINX_HOST} localhost;
+    server_name 192.168.1.19 localhost;
     
     location / {
         return 200 '<h1>Serviços Disponíveis</h1><p><a href="/n8n">N8N</a> | <a href="/evolution/manager">Evolution</a></p>';
@@ -9,17 +9,17 @@ server {
     
     location /n8n {
         proxy_pass http://n8n_api:5678;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
     
     location /evolution/ {
         proxy_pass http://evolution:8080/;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
 }
