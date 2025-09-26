@@ -1,8 +1,8 @@
 services:
   evolution:
     image: atendai/evolution-api:latest
-    ports:
-      - 8080:8080
+    expose:
+      - "8080"
     networks:
       - gmorang_network
     env_file:

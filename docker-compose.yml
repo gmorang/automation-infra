@@ -58,6 +58,17 @@ services:
     depends_on:
       - n8n_api
 
+  nginx:
+    extends:
+      file: ./services/nginx/docker-compose.yml
+      service: nginx
+    hostname: nginx
+    networks:
+      - gmorang_network
+    depends_on:
+      - n8n_api
+      - evolution
+
 networks:
   gmorang_network:
     name: gmorang_network
@@ -72,3 +83,5 @@ volumes:
     name: postgres_data
   evolution_data:
     name: evolution_data
+  nginx_logs:
+    name: nginx_logs

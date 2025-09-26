@@ -7,8 +7,6 @@ services:
       - n8n_data:/home/node/.n8n
     expose:
       - "5678"
-    ports:
-      - "${N8N_PORT}:5678"
     networks:
       - gmorang_network
     restart: unless-stopped

@@ -1,0 +1,26 @@
+services:
+  nginx:
+    image: nginx:alpine
+    container_name: nginx
+    env_file:
+      - nginx.env
+    ports:
+      - "${PORT}:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - nginx_logs:/var/log/nginx
+    networks:
+      - gmorang_network
+    restart: unless-stopped
+    environment:
+      - NGINX_HOST=${HOST}
+      - NGINX_PORT=${PORT}
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "http://localhost/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+volumes:
+  nginx_logs:
+    name: nginx_logs
