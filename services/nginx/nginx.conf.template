@@ -52,7 +52,7 @@ server {
         # Remover o prefixo /n8n/ antes de enviar para o backend
         rewrite ^/n8n/(.*) /$1 break;
         
-        proxy_pass http://automation-infra-n8n_api-1:5678;
+        proxy_pass http://automation-infra-n8n_api-1:5678/;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
