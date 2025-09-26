@@ -31,7 +31,7 @@ server {
             <div class="service">
                 <h2>📊 N8N <span class="status">ONLINE</span></h2>
                 <p class="description">Workflow automation platform and system integration. Create complex automations without code.</p>
-                <a href="/n8n/">Access N8N</a>
+                <a href="/n8n">Access N8N</a>
             </div>
             
             <div class="service">
@@ -46,8 +46,8 @@ server {
         add_header Content-Type text/html;
     }
     
-    location /n8n/ {
-        proxy_pass http://n8n_api:5678/;
+    location /n8n {
+        proxy_pass http://n8n_api:5678;
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection 'upgrade';
