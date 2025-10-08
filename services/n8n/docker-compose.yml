@@ -5,8 +5,8 @@ services:
       - n8n.env
     volumes:
       - n8n_data:/home/node/.n8n
-    expose:
-      - "5678"
+    ports:
+      - "5678:5678"
     networks:
       - gmorang_network
     restart: unless-stopped
