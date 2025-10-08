@@ -9,6 +9,15 @@ services:
       - "5678:5678"
     networks:
       - gmorang_network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.n8n_api.rule=Host(`${N8N_HOST}`)"
+      - "traefik.http.routers.n8n_api.entrypoints=websecure"
+      - "traefik.http.routers.n8n_api.tls=true"
+      - "traefik.http.routers.n8n_api.tls.certresolver=letsencrypt"
+      - "traefik.http.routers.n8n_api.priority=10"
+      - "traefik.http.routers.n8n_api.service=n8n_api"
+      - "traefik.http.services.n8n_api.loadbalancer.server.port=5678"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:5678/healthz"]
