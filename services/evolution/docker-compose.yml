@@ -1,8 +1,8 @@
 services:
   evolution:
     image: atendai/evolution-api:latest
-    ports:
-      - "8082:8080"
+    expose:
+      - "8080"
     networks:
       - gmorang_network
     env_file:
@@ -25,11 +25,6 @@ services:
       timeout: 10s
       retries: 3
       start_period: 30s
-    deploy:
-      resources:
-        limits:
-          cpus: "1"
-          memory: 1G
 
 volumes:
   evolution_data:
