@@ -2,7 +2,7 @@ services:
   evolution:
     image: atendai/evolution-api:latest
     ports:
-      - "8080:8080"
+      - "8082:8082"
     networks:
       - gmorang_network
     env_file:
@@ -13,7 +13,7 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.evolution.rule=Host(`192.168.1.19`)"
       - "traefik.http.routers.evolution.entrypoints=web"
-      - "traefik.http.services.evolution.loadbalancer.server.port=8080"
+      - "traefik.http.services.evolution.loadbalancer.server.port=8082"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8080/health"]
