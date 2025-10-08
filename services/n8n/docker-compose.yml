@@ -11,7 +11,7 @@ services:
       - gmorang_network
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.n8n.rule=Host(`${N8N_HOST}`) && PathPrefix(`/n8n`)"
+      - "traefik.http.routers.n8n.rule=Host(`192.168.1.19`) && PathPrefix(`/n8n`)"
       - "traefik.http.routers.n8n.entrypoints=web"
       - "traefik.http.routers.n8n.priority=10"
       - "traefik.http.routers.n8n.service=n8n"
@@ -51,7 +51,7 @@ services:
           - n8nwebhook
     labels:
       - "traefik.enable=true"
-      - "traefik.http.routers.n8n_webhook.rule=Host(`${N8N_HOST}`) && (PathPrefix(`/webhook`) || PathPrefix(`/webhook-test`) || PathPrefix(`/webhook-wait`))"
+      - "traefik.http.routers.n8n_webhook.rule=Host(`192.168.1.19`) && (PathPrefix(`/webhook`) || PathPrefix(`/webhook-test`) || PathPrefix(`/webhook-wait`))"
       - "traefik.http.routers.n8n_webhook.entrypoints=web"
       - "traefik.http.routers.n8n_webhook.priority=10"
       - "traefik.http.routers.n8n_webhook.service=n8n_webhook"
