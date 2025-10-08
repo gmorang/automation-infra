@@ -1,23 +1,14 @@
 services:
   evolution:
     image: atendai/evolution-api:latest
-    expose:
-      - "8080"
+    ports:
+      - "8080:8080"
     networks:
       - gmorang_network
     env_file:
       - evolution.env
     volumes:
       - evolution_data:/evolution/instances
-    labels:
-      - "traefik.enable=true"
-      - "traefik.http.routers.evolution.rule=Host(`192.168.1.19`) && PathPrefix(`/evolution`)"
-      - "traefik.http.routers.evolution.entrypoints=web"
-      - "traefik.http.routers.evolution.priority=10"
-      - "traefik.http.routers.evolution.service=evolution"
-      - "traefik.http.services.evolution.loadbalancer.server.port=8080"
-      - "traefik.http.middlewares.evolution-stripprefix.stripprefix.prefixes=/evolution"
-      - "traefik.http.routers.evolution.middlewares=evolution-stripprefix"
     restart: unless-stopped
     healthcheck:
       test: ["CMD", "wget", "--spider", "http://localhost:8080/health"]
