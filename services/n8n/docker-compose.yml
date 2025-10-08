@@ -52,12 +52,12 @@ services:
     labels:
       - "traefik.enable=true"
       - "traefik.http.routers.n8n_webhook.rule=Host(`${N8N_HOST}`) && (PathPrefix(`/webhook`) || PathPrefix(`/webhook-test`) || PathPrefix(`/webhook-wait`))"
-      - "traefik.http.routers.n8n.entrypoints=web"
-      - "traefik.http.routers.n8n.priority=10"
-      - "traefik.http.routers.n8n.service=n8n"
-      - "traefik.http.services.n8n.loadbalancer.server.port=5678"
-      - "traefik.http.middlewares.n8n-stripprefix.stripprefix.prefixes=/n8n"
-      - "traefik.http.routers.n8n.middlewares=n8n-stripprefix"
+      - "traefik.http.routers.n8n_webhook.entrypoints=web"
+      - "traefik.http.routers.n8n_webhook.priority=10"
+      - "traefik.http.routers.n8n_webhook.service=n8n_webhook"
+      - "traefik.http.services.n8n_webhook.loadbalancer.server.port=5678"
+      - "traefik.http.middlewares.n8n_webhook-stripprefix.stripprefix.prefixes=/webhook"
+      - "traefik.http.routers.n8n_webhook.middlewares=n8n_webhook-stripprefix"
     restart: unless-stopped
     depends_on:
       n8n_api:
