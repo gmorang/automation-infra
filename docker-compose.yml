@@ -1,4 +1,9 @@
 services:
+  traefik:
+    extends:
+      file: ./services/traefik/docker-compose.yml
+      service: traefik
+
   postgres:
     extends:
       file: ./databases/postgres/docker-compose.yml

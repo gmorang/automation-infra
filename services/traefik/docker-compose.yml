@@ -1,0 +1,29 @@
+services:
+  traefik:
+    image: traefik:v2.11
+    command:
+      - --providers.docker=true
+      - --providers.docker.exposedbydefault=false
+      - --entrypoints.web.address=:80
+      - --api.dashboard=true
+      - --api.insecure=true
+    ports:
+      - "80:80"
+      - "8081:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - gmorang_network
+    restart: unless-stopped
+    deploy:
+      resources:
+        reservations:
+          cpus: "0.2"
+          memory: 256M
+        limits:
+          cpus: "0.5"
+          memory: 512M
+
+networks:
+  gmorang_network:
+    external: true
