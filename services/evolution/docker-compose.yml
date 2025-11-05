@@ -1,6 +1,6 @@
 services:
   evolution:
-    image: atendai/evolution-api:v2.3.0
+    image: atendai/evolution-api:v2.3.6
     ports:
       - "8080:8080"
     networks:
