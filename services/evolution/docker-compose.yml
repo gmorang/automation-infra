@@ -1,6 +1,6 @@
 services:
   evolution:
-    image: evoapicloud/evolution-api:v2.3.0
+    image: evoapicloud/evolution-api:v2.3.3
     ports:
       - "8080:8080"
     networks:
